@@ -1,0 +1,26 @@
+<body>
+    <h1>details</h1>
+    <a href="index.html">home</a>
+    <a href="products.html">Products</a>
+    <div id="results"></div>
+</body>
+<script>
+    /*
+    let params = (new URL(document.location)).searchParams;
+    let name = params.get('name');
+    */
+
+    let params = (new URL(document.location)).searchParams;
+    let id = params.get('id');
+
+    const results = document.getElementById("results");
+    results.innerHTML = "";
+    fetch("http://localhost:8081/api/products/" + id)
+        .then(response => response.json())
+        .then(p => {
+                const d = document.createElement("div");
+                d.innerHTML = `ID: ${p.productId} <br> NAME: ${p.productName}`;
+                results.appendChild(d);
+            })
+
+</script>
