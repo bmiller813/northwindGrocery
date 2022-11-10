@@ -1,0 +1,68 @@
+<body>
+    <h1>Products</h1>
+    <a href="index.html">Home</a>
+    <select id="mode">
+        <option value="">Select one...</option>
+        <option value="category">Search by category</option>
+        <option value="all">View all</option>
+    </select>
+    <div id="results">Results</div>
+</body>
+<script>
+    const mode = document.getElementById("mode");
+    const results = document.getElementById("results");
+    let select = undefined; //global scope
+    function showAll(){
+        results.innerHTML = "";
+        fetch("http://localhost:8081/api/products")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(p => {
+                    const d = document.createElement("div");
+                    d.innerHTML = p.productName;
+                    results.appendChild(d);
+                })
+            })
+    }
+    function showResults(){
+        results.innerHTML = "";
+        const id = select.selectedOptions[0].value;
+        fetch("http://localhost:8081/api/categories/" + id)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(p => {
+                    const d = document.createElement("div");
+                    d.innerHTML = p.productName;
+                    results.appendChild(d);
+                })
+            })
+    }
+    function createSelect() {
+        select = document.createElement("select");
+        fetch("http://localhost:8081/api/categories")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.categoryId;
+                    opt.innerHTML = c.name;
+                    select.appendChild(opt);
+                });
+                select.addEventListener("change", e => showResults());
+                mode.after(select); //insert new select after the mode select.
+                //document.body.appendChild(select);
+            })
+    }
+
+    mode.addEventListener("change", e => {
+        const value = mode.selectedOptions[0].value;
+        if ("category" == value) {
+            //Create select
+            createSelect();
+        } else {
+            //destroy select
+            select.remove();
+            showAll();
+        }
+    });
+</script>
