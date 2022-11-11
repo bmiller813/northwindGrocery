@@ -7,11 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
-    <title>Bryan's Grocery</title>
+    <title>Grocery Property</title>
 
     <link rel="stylesheet" href="styles/main.css">
     <script src="https://kit.fontawesome.com/c26cd2166c.js"></script>
-    <script src="scripts/main.js"></script>
+    
 </head>
 <body>
     <nav id="nav" class="navbar" style="background: #25597C">
@@ -22,7 +22,6 @@
         </div>
     </nav>
     <h1>Products</h1>
-    <a href="index.html">Home</a>
     <select id="mode">
         <option value="">Select one...</option>
         <option value="category">Search by category</option>
@@ -30,65 +29,5 @@
     </select>
     <div id="results">Results</div>
 </body>
-<script>
-    const mode = document.getElementById("mode");
-    const results = document.getElementById("results");
-    let select = undefined; //global scope
-    function showAll() {
-        results.innerHTML = "";
-        fetch("http://localhost:8081/api/products")
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(p => {
-                    const d = document.createElement("div");
-                    d.innerHTML = `<a href="details.html?id=${p.productId}"> ${p.productName}</a>`;
-                    results.appendChild(d);
-                })
-            })
-    }
-    function showResults() {
-        results.innerHTML = "";
-        const id = select.selectedOptions[0].value;
-        fetch("http://localhost:8081/api/categories/" + id)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(p => {
-                    const d = document.createElement("div");
-                    d.innerHTML = `<a href="details.html?id=${p.productId}"> ${p.productName}</a>`;
-                    results.appendChild(d);
-                })
-            })
-    }
-    function createSelect() {
-        select = document.createElement("select");
-        fetch("http://localhost:8081/api/categories")
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c.categoryId;
-                    opt.innerHTML = c.name;
-                    select.appendChild(opt);
-                });
-                select.addEventListener("change", e => showResults());
-                mode.after(select); //insert new select after the mode select.
-                //document.body.appendChild(select);
-            })
-    }
-
-    mode.addEventListener("change", e => {
-        const value = mode.selectedOptions[0].value;
-        if ("category" == value) {
-            results.innerHTML = "";
-            //Create select
-            createSelect();
-        } else {
-            showAll();
-            //destroy select
-            if (undefined != select) {
-                select.remove();
-            }
-        }
-    });
-</script>
+<script src="scripts/products.js"></script>
 </html>
