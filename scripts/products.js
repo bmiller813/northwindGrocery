@@ -53,8 +53,13 @@ let select = undefined; //global scope
 
 function productLink(p) {
     const d = document.createElement("div");
+    const d2 = document.createElement("div");
+
     d.classList.add("card");
-    d.innerHTML = `<a href="details.html?id=${p.productId}"> ${p.productName}</a>`;
+    d2.classList.add("card-desc");
+    d.innerHTML = `<a href="details.html?id=${p.productId}"> ${p.productName} </a> `;
+    d2.innerHTML = `<img src="images/c${id}.png">` 
+   
     return d
 }
 
@@ -74,9 +79,10 @@ function showAll() {
     fetch("http://localhost:8081/api/products")
         .then(response => response.json())
         .then(data => {
-
+            
             data.sort(sortByProperty("productName"));
             data.forEach(p => {
+                
                 results.appendChild((productLink(p)));
             })
         })
@@ -104,7 +110,7 @@ function showResults() {
     fetch("http://localhost:8081/api/categories/" + id)
         .then(response => response.json())
         .then(data => {
-
+            
             const table = document.createElement("table");
             data.sort(sortByProperty("productName"));
             //table.border = 1;
