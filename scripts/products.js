@@ -51,23 +51,38 @@ const mode = document.getElementById("mode");
 const results = document.getElementById("results");
 let select = undefined; //global scope
 
-function productLink(p){
+function productLink(p) {
     const d = document.createElement("div");
+    d.classList.add("card");
     d.innerHTML = `<a href="details.html?id=${p.productId}"> ${p.productName}</a>`;
     return d
 }
+
+function sortByProperty(property) {
+    return function (a, b) {
+        if (a[property] > b[property])
+            return 1;
+        else if (a[property] < b[property])
+            return -1;
+
+        return 0;
+    }
+}
+
 function showAll() {
     results.innerHTML = "";
     fetch("http://localhost:8081/api/products")
         .then(response => response.json())
         .then(data => {
-            data.forEach(p => {  
+
+            data.sort(sortByProperty("productName"));
+            data.forEach(p => {
                 results.appendChild((productLink(p)));
             })
         })
 }
 
-function createTd(product, property){
+function createTd(product, property) {
     let td = document.createElement("td");
     td.innerHTML = product[property];
     return td;
@@ -89,9 +104,11 @@ function showResults() {
     fetch("http://localhost:8081/api/categories/" + id)
         .then(response => response.json())
         .then(data => {
+
             const table = document.createElement("table");
+            data.sort(sortByProperty("productName"));
             //table.border = 1;
-            data.forEach(p => {  
+            data.forEach(p => {
                 createRow(p, table);
             })
             results.appendChild(table);
